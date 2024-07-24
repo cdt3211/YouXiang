@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>贴文管理系统</title>
+  <link rel="stylesheet" th:href="@{/css/adminData.css}">
+</head>
+<body>
+<div id="viewport">
+  <div id="sidebar">
+    <!--    标题-->
+    <header>
+      <a class="logo" th:href="@{/index}">拾光优享</a>
+    </header>
+    <div class="avatar-container">
+      <!--        头像-->
+      <img th:src="@{${loggedInUser.avatar}}" alt="用户头像" class="avatar">
+    </div>
+    <!--    头像下显示用户名-->
+    <p class="user-name"><span th:text="${loggedInUser.username}"></span></p>
+    <ul>
+      <li><a class="logo" th:href="@{/admin}">首页</a></li>
+      <li><a class="logo user" th:href="@{/admin/users}">用户管理</a></li>
+      <li><a class="logo product" th:href="@{/admin/products}">产品管理</a></li>
+      <li><a class="logo post" th:href="@{/admin/posts}">帖文管理</a></li>
+      <li><a class="logo category" th:href="@{/admin/categories}">分类管理</a></li>
+      <li><a class="logo comment" th:href="@{/admin/comments}">评论管理</a></li>
+    </ul>
+  </div>
+</div>
+<div id="content">
+  <h1>贴文管理</h1>
+  <div class="search">
+    <form action="/searchPosts" method="get">
+      帖子ID：&nbsp;&nbsp;&nbsp;<input type="text" name="post_id" class="input">
+      帖子作者ID：<input type="text" name="user.user_id" class="input">
+      帖子作者名称：<input type="text" name="user.username" class="input"><br><br>
+      帖子标题：<input type="text" name="title" class="input">
+      &nbsp;&nbsp;帖子内容：&nbsp;&nbsp;<input type="text" name="description" class="input">
+      <button type="submit" value="搜索">搜索</button>
+    </form>
+    <br>
+    <form action="/searchPostsByStr" method="post">
+      模糊搜索：<input type="text" name="searchStr" id="searchStr" class="input">
+      <button type="submit" value="搜索">搜索</button>
+    </form><br>
+    <button type="button" value="批量删除" onclick="dels()">批量删除</button>
+  </div>
+  <div>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前查询到的贴文数：<span th:text="${posts.size()}"></span></p>
+  </div>
+  <div class="list">
+    <table>
+      <thead>
+      <tr>
+        <td>选择</td>
+        <td>帖子ID</td>
+        <td>作者ID</td>
+        <td>作者名称</td>
+        <td>帖子标题</td>
+        <td>帖子封面</td>
+        <td>发布时间</td>
+        <td>点赞量</td>
+        <td>操作</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="post:${posts}">
+        <td><input type="checkbox" class="post_ids" th:value="${post.post_id}"></td>
+        <td th:text="${post.post_id}">帖子ID</td>
+        <td th:text="${post.user.user_id}">帖子作者ID</td>
+        <td><a th:href="@{'/home/'+${post.user.user_id}}" th:text="${post.user.username}"></a></td>
+        <td><a th:href="@{/index/post/{id}(id=${post.post_id})}" th:text="${post.title}"></a></td>
+        <td><img th:src="${post.cover_image}" th:alt="${post.title}" width="100" height="100"></td>
+        <td th:text="${post.create_at != null ? #dates.format(post.create_at, 'yyyy-MM-dd HH:mm:ss') : '未提供时间'}">发布时间</td>
+        <td th:text="${post.likes}">点赞量</td>
+        <td>
+          <a th:href="@{'/deletePost/'+${post.post_id}}">删除</a>
+        </td>
+      </tr>
+      </tbody>
+    </table><br><br>
+  </div>
+</div>
+<script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+<script>
+      function dels(){
+          if(confirm("确定删除所选贴文吗？")){
+              var post_ids="";
+              $(".post_ids").each(
+                  function(i,e){
+                      if($(e).is(":checked")){
+                          var post_id=$(e).val();
+                          post_ids+=post_id+",";
+                      }
+                  }
+              )
+          }
+          if(post_ids.length==0){
+              alert("请选择要删除的贴文！");
+          }else{
+              post_ids=post_ids.substring(0,post_ids.length-1);
+              location.href="/deletePosts?post_id="+post_ids;
+          }
+      }
+  </script>
+</body>
+</html>

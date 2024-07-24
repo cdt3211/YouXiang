@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员导航</title>
+    <link rel="stylesheet" th:href="@{/css/adminHome.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+<div id="viewport">
+    <div id="sidebar">
+    <!--    标题-->
+        <header>
+            <a class="logo" th:href="@{/index}">拾光优享</a>
+        </header>
+        <div class="avatar-container">
+    <!--        头像-->
+            <img th:src="@{${loggedInUser.avatar}}" alt="用户头像" class="avatar">
+        </div>
+    <!--    头像下显示用户名-->
+        <p class="user-name"><span th:text="${loggedInUser.username}"></span></p>
+        <ul>
+            <li><a class="logo" th:href="@{/admin}">首页</a></li>
+            <li><a class="logo user" th:href="@{/admin/users}">用户管理</a></li>
+            <li><a class="logo product" th:href="@{/admin/products}">产品管理</a></li>
+            <li><a class="logo post" th:href="@{/admin/posts}">帖文管理</a></li>
+            <li><a class="logo category" th:href="@{/admin/categories}">分类管理</a></li>
+            <li><a class="logo comment" th:href="@{/admin/comments}">评论管理</a></li>
+        </ul>
+    </div>
+</div>
+<div id="content">
+    <div class="welcome">
+        <h1>你好，管理员！</h1>
+        <p>欢迎使用拾光优享后台管理系统。</p>
+    </div>
+    <div class="big1-box">
+        <a class="small-box" id="one" href="/admin/users">
+            <i class="fas fa-user"></i>
+            <p>用户管理</p>
+        </a>
+        <a class="small-box" id="two" href="/admin/products">
+            <i class="fas fa-inbox"></i>
+            <p>产品管理</p>
+        </a>
+    </div>
+    <div class="big2-box">
+        <a class="small-box" id="three" href="/admin/posts">
+            <i class="fas fa-pen-square"></i>
+            <p>帖文管理</p>
+        </a>
+        <a class="small-box" id="four" href="/admin/categories">
+            <i class="fas fa-th-large"></i>
+            <p>分类管理</p>
+        </a>
+        <a class="small-box" id="five" href="/admin/comments">
+            <i class="fas fa-comment-dots"></i>
+            <p>评论管理</p>
+        </a>
+    </div>
+</div>
+</body>
+</html>

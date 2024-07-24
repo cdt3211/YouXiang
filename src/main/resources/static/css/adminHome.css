@@ -1,0 +1,199 @@
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: #333;
+}
+
+a:hover {
+    color: #555;
+}
+
+button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+button a {
+    color: white;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+input[type="text"],
+input[type="Integer"] {
+    width: 200px;
+    padding: 8px;
+    margin: 5px 10px 5px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* 侧边栏 */
+#viewport {
+    display: flex;
+}
+
+#sidebar {
+    width: 250px;
+    background: url("https://pic.netbian.com/uploads/allimg/170611/183323-1497177203b9d9.jpg") repeat-y;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    padding-top: 10px;
+    transition: all 0.5s ease;
+}
+
+#sidebar header {
+    padding: 20px;
+    text-align: center;
+    background: #000;
+}
+
+#sidebar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+#sidebar .avatar-container {
+    text-align: center;
+    padding: 20px;
+}
+
+#sidebar .avatar {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    border: 2px solid #fff;
+}
+
+#sidebar .user-name {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#sidebar ul li {
+    padding: 10px 20px;
+}
+
+#sidebar ul li a {
+    color: white;
+    font-size: 16px;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+#sidebar ul li a:hover {
+    background-color: #555;
+    border-radius: 4px;
+}
+
+#content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#content h1, #content p {
+    text-align: center;
+}
+
+.welcome {
+    margin-bottom: 20px;
+}
+
+.big1-box, .big2-box {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.small-box {
+    position: relative;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    margin: 10px;
+    flex: 1 1 calc(50% - 20px);
+    min-width: 200px;
+    height: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.small-box:hover{
+    background-color: #f0f0f0;
+}
+
+.small-box i {
+    font-size: 48px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.small-box p {
+    font-size: 20px;
+    color: #333;
+}
+
+@media screen and (max-width: 768px) {
+    #viewport {
+        flex-direction: column;
+    }
+
+    #sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+    }
+    #sidebar ul{
+        display:none;
+    }
+
+    #content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .big1-box, .big2-box {
+        flex-direction: column;
+    }
+
+    .small-box {
+        width: 100%;
+    }
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>分类信息列表</title>
+  <link rel="stylesheet" th:href="@{/css/adminData.css}">
+</head>
+<body>
+<div id="viewport">
+  <div id="sidebar">
+    <!--    标题-->
+    <header>
+      <a class="logo" th:href="@{/index}">拾光优享</a>
+    </header>
+    <div class="avatar-container">
+      <!--        头像-->
+      <img th:src="@{${loggedInUser.avatar}}" alt="用户头像" class="avatar">
+    </div>
+    <!--    头像下显示用户名-->
+    <p class="user-name"><span th:text="${loggedInUser.username}"></span></p>
+    <ul>
+      <li><a class="logo" th:href="@{/admin}">首页</a></li>
+      <li><a class="logo user" th:href="@{/admin/users}">用户管理</a></li>
+      <li><a class="logo product" th:href="@{/admin/products}">产品管理</a></li>
+      <li><a class="logo post" th:href="@{/admin/posts}">帖文管理</a></li>
+      <li><a class="logo category" th:href="@{/admin/categories}">分类管理</a></li>
+      <li><a class="logo comment" th:href="@{/admin/comments}">评论管理</a></li>
+    </ul>
+  </div>
+</div>
+
+<div id="content">
+  <h1>分类管理</h1>
+  <div class="search">
+    <button><a th:href="@{/addCategory}">添加分类</a></button><br><br>
+    <form action="/searchCategories" method="get">
+      &nbsp;&nbsp;&nbsp;&nbsp;CID：&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="category_id" class="input">&nbsp;&nbsp;
+      分类名称：<input type="text" name="name" class="input">
+      <button type="submit" value="搜索">搜索</button>
+    </form>
+    <br>
+
+    <form action="/searchCategoriesByStr" method="post">
+      模糊搜索：<input type="text" name="searchStr" id="searchStr" class="input">
+      <button type="submit" value="搜索">搜索</button>
+    </form><br>
+    <button type="button" value="批量删除" onclick="dels()">批量删除</button>
+  </div>
+  <div>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前查询到的分类数：<span th:text="${categories.size()}"></span></p>
+  </div>
+  <div class="list">
+    <table>
+      <thead>
+      <tr>
+        <td>选择</td>
+        <td>CID</td>
+        <td>分类名称</td>
+        <td>产品数量</td>
+        <td>帖子数量</td>
+        <td>热度</td>
+        <td>操作</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="category:${categories}">
+        <td><input type="checkbox" class="category_ids" th:value="${category.category_id}"></td>
+        <td th:text="${category.category_id}"></td>
+        <td th:text="${category.name}"></td>
+        <td th:text="${category.productnum}"></td>
+        <td th:text="${category.collectnum}"></td>
+        <td th:text="${category.description}"></td>
+        <td th:text="${category.create_at != null ? #dates.format(category.create_at, 'yyyy-MM-dd HH:mm:ss') : '未提供时间'}"></td>
+        <td>
+          <a th:href="@{'/toUpdateCategory/'+${category.category_id}}">编辑</a>
+          <a th:href="@{'/deleteCategory/'+${category.category_id}}">删除</a>
+        </td>
+      </tr>
+      </tbody>
+    </table><br><br>
+  </div>
+</div>
+<script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+<script>
+    function dels(){
+        if(confirm("确定删除所选分类吗？")){
+            var category_ids="";
+            $(".category_ids").each(
+                function(i,e){
+                    if($(e).is(":checked")){
+                        var category_id=$(e).val();
+                        category_ids+=category_id+",";
+                    }
+                }
+            )
+        }
+        if(category_ids.length==0){
+            alert("请选择要删除的分类！");
+        }else{
+            category_ids=category_ids.substring(0,category_ids.length-1);
+            location.href="/deleteCategories?category_id="+category_ids;
+        }
+    }
+</script>
+</body>
+</html>

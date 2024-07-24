@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cupk.mapper.ProductMapper">
+    <select id="findProductsByCategoryId" resultType="Product">
+      select * from products
+      where category_id = #{categoryId}
+    </select>
+
+    <select id="findAllProducts" resultType="Product">
+        select * from products
+    </select>
+
+    <select id="findProductById" resultType="Product">
+        select * from products where product_id = #{product_id};
+    </select>
+
+    <insert id="addProduct" useGeneratedKeys="true" keyProperty="product_id">
+        insert into products(name,description, brand, image, category_id)
+        values (#{name}, #{description}, #{brand}, #{image}, #{category_id});
+    </insert>
+    <update id="updateProduct" parameterType="Product">
+        update products set name = #{name}, brand = #{brand},image = #{image}, description = #{description}, collected = #{collected}, postnumbers = #{postnumbers} where product_id = #{product_id};
+    </update>
+    <delete id="deleteProduct" parameterType="int">
+        delete from products where product_id = #{product_id};
+    </delete>
+    <select id="searchProducts" resultType="Product">
+        select * from products
+        <where>
+            <if test="product_id!= null and product_id != ''">
+                and product_id like concat('%', #{product_id}, '%')
+            </if>
+            <if test="name!= null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="brand!= null and brand != ''">
+                and brand like concat('%', #{brand}, '%')
+            </if>
+            <if test="category_id!= null and category_id != ''">
+                and category_id like concat('%', #{category_id}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="searchProductsByStr" parameterType="java.lang.String" resultType="Product">
+        select * from products
+        where 1=1
+        <if test="searchStr!=null and searchStr!=''">
+            and name like concat('%', #{searchStr}, '%')
+            or description like concat('%', #{searchStr}, '%')
+            or brand like concat('%', #{searchStr}, '%')
+            or category_id like concat('%', #{category_id}, '%')
+        </if>
+    </select>
+    <delete id="deleteProducts">
+        delete from products where product_id in
+        <foreach collection="array" item="product_id" open="(" close=")" separator=",">
+            #{product_id}
+        </foreach>
+    </delete>
+    <delete id="deleteProductPost">
+        delete from product_posts where product_id = #{product_id};
+    </delete>
+    <delete id="deleteCollects">
+        delete from user_collects where collect_product_id = #{product_id};
+    </delete>
+    <delete id="deleteProductPostsByProductIds">
+        delete from product_posts where product_id in
+        <foreach collection="array" item="product_id" open="(" close=")" separator=",">
+            #{product_id}
+        </foreach>
+    </delete>
+    <delete id="deleteCollectsByProductIds">
+        delete from user_collects where collect_product_id in
+        <foreach collection="array" item="product_id" open="(" close=")" separator=",">
+            #{product_id}
+        </foreach>
+    </delete>
+<!--    收藏-->
+    <update id="addCollect" parameterType="Integer">
+        update products
+        set collected = collected + 1
+        where product_id = #{product_id};
+    </update>
+    <update id="reduceCollect" parameterType="Integer">
+        update products
+        set collected = collected - 1
+        where product_id = #{product_id};
+    </update>
+    <insert id="collectProduct" parameterType="Integer">
+        insert into user_collects (collect_product_id,collect_user_id)
+        values (#{product_id}, #{user_id});
+    </insert>
+    <delete id="cancelCollect" parameterType="Integer">
+        delete from user_collects
+        where collect_product_id = #{product_id} and collect_user_id = #{user_id};
+    </delete>
+    <select id="findUserCollects" parameterType="Integer" resultType="Product">
+        select p.*
+        from products p
+        join user_collects uc on p.product_id = uc.collect_product_id
+        where uc.collect_user_id = #{user_id};
+    </select>
+    <select id="hasUserCollectedProduct" parameterType="map" resultType="boolean">
+        select count(*) > 0
+        from user_collects
+        where collect_product_id = #{product_id} and collect_user_id = #{user_id};
+    </select>
+</mapper>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>修改用户</title>
+    <link  rel="stylesheet" th:href="@{/css/adminUpdateData.css}">
+</head>
+<body>
+<div class="list">
+    <h1>修改用户</h1>
+    <form th:action="@{/admin/updateUser}" method="post" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td>头像</td>
+                <td>
+                    <img id="avatarPreview" th:src="@{${user.avatar}}" alt="头像" class="avatar">
+                    <input type="file" name="avatarFile" id="avatarFile" class="input" onchange="previewAvatar()">
+                </td>
+            </tr>
+            <tr>
+                <td>UID</td>
+                <td><input type="text" name="user_id" th:value="${user.user_id}" readonly class="input"></td>
+            </tr>
+            <tr>
+                <td>用户名</td>
+                <td><input type="text" name="username" th:value="${user.username}" class="input"></td>
+            </tr>
+            <tr>
+                <td>密码</td>
+                <td><input type="text" name="password" th:value="${user.password}" class="input"></td>
+            </tr>
+            <tr>
+                <td>邮箱</td>
+                <td><input type="text" name="email" th:value="${user.email}" class="input"></td>
+            </tr>
+            <tr>
+                <td>简介</td>
+                <td><input type="text" name="bio" th:value="${user.bio}" class="input"></td>
+            </tr>
+            <tr>
+                <td>角色</td>
+                <td>
+                    <select name="role" class="input">
+                        <option value="user">普通用户</option>
+                        <option value="admin">管理员</option>
+                    </select>
+                </td>
+            <tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="修改" class="submit"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script th:src="@{/js/upLoadAvatar.js}"></script>
+</body>
+</html>

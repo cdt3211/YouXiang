@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cupk.mapper.CategoryMapper">
+    <select id="findAllCategories" resultType="Category">
+        select * from categories
+    </select>
+    <select id="findCategoryById" resultType="Category">
+        select * from categories where category_id = #{category_id};
+    </select>
+    <insert id="addCategory" useGeneratedKeys="true" keyProperty="category_id">
+        insert into categories values (null, #{name}, #{productnum}, #{collectnum}, #{description},#{create_at});
+    </insert>
+    <update id="updateCategory" parameterType="Category">
+        update categories
+        set name = #{name},description = #{description}
+        where category_id = #{category_id};
+    </update>
+    <delete id="deleteCategory" parameterType="int">
+        delete from categories where category_id = #{category_id};
+    </delete>
+    <select id="searchCategories" resultType="Category">
+        select * from categories
+        <where>
+            <if test="category_id!= null and category_id != ''">
+                and category_id like concat('%', #{category_id}, '%')
+            </if>
+            <if test="name!= null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="searchCategoriesByStr" parameterType="java.lang.String" resultType="Category">
+        select * from categories
+        where 1=1
+        <if test="searchStr!=null and searchStr!=''">
+            and name like concat('%', #{searchStr}, '%')
+            or category_id like concat('%', #{searchStr}, '%')
+            or description like concat('%', #{searchStr}, '%')
+        </if>
+    </select>
+    <delete id="deleteCategories">
+        delete from categories where category_id in
+        <foreach collection="array" item="category_id" open="(" close=")" separator=",">
+            #{category_id}
+        </foreach>
+    </delete>
+</mapper>

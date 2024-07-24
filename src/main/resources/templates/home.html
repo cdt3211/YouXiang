@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人主页</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+<header class="header">
+    <a class="logo" th:href="@{/index}">拾光优享</a>
+    <nav class="logout">
+        <a th:if="${loggedInUser != null and loggedInUser.role == 'admin'}" th:href="@{/admin}" class="edit">管理员后台</a>
+        <a th:if="${loggedInUser != null and loggedInUser.user_id == user.user_id}" th:href="@{'/toUserUpdateUser/'+${loggedInUser.user_id}}" class="edit">编辑</a>
+        <a th:if="${loggedInUser != null and loggedInUser.user_id == user.user_id}"  href="javascript:void(0);" onclick="confirmLogout()" class="btn">退出登录</a>
+    </nav>
+</header>
+
+<div class="sidebar">
+    <ul>
+        <li>
+            <a th:href="@{/index}">发现</a>
+        </li>
+        <li>
+            <a th:href="@{/release}">发布</a>
+        </li>
+    </ul>
+</div>
+<div class="content">
+    <div class="user-card">
+        <div class="avatar-container">
+            <!--        头像-->
+            <img th:src="@{${user.avatar}}"
+                 alt="用户头像" class="avatar" id="avatar">
+            <input type="file" id="avatarFile" style="display:none;">
+        </div>
+        <div class="user-info">
+            <h2 th:text="${user.username}">Abner</h2>
+            <p th:text="${user.bio}">我是振刀大王</p>
+        </div>
+        <div class="email-address">
+            <p th:text="${user.email}"></p>
+        </div>
+    </div>
+    <div class="nav">
+        <a  id="linkA" onclick="showContent('myPost'); return false;">帖子</a>
+        <a  id="linkB" onclick="showContent('myCollection'); return false;">收藏</a>
+        <a  id="linkC" onclick="showContent('myLikes'); return false;">喜欢</a>
+    </div>
+    <div class="all" id="myPost">
+        <div class="cards" id="cards">
+            <a th:each="post : ${posts}" class="card" th:href="@{/index/post/{id}(id=${post.post_id})}">
+                <div class="card-cover">
+                    <img th:src="@{${post.cover_image}}" th:alt="${post.title}">
+                </div>
+                <div class="card-info">
+                    <h3 th:text="${post.title}">Post Title</h3>
+                    <p th:text="${post.description}">Post Description</p>
+                    <div class="author-wrapper">
+                        <div class="likes">
+                            <i class="far fa-heart"></i>
+                            <span th:text="${post.likes}"></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="all" id="myCollection">
+        <div class="cards">
+            <a th:each="product : ${products}" class="card" th:href="@{/index/product/{id}(id=${product.product_id})}">
+                <div class="card-cover">
+                    <img th:src="@{${product.image}}" th:alt="${product.name}">
+                </div>
+                <div class="card-info">
+                    <h3 th:text="${product.name}">Post Title</h3>
+                    <p th:text="${product.description}">Post Description</p>
+                    <div class="author-wrapper">
+                        <div class="likes">
+                            <i class="fas fa-star"></i>
+                            <span th:text="${product.collected}">123</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="all" id="myLikes">
+        <div class="cards">
+            <a th:each="post : ${likePosts}" class="card" th:href="@{/index/post/{id}(id=${post.post_id})}">
+                <div class="card-cover">
+                    <img th:src="@{${post.cover_image}}" th:alt="${post.title}">
+                </div>
+                <div class="card-info">
+                    <h3 th:text="${post.title}">Post Title</h3>
+                    <p th:text="${post.description}">Post Description</p>
+                    <div class="author-wrapper">
+                        <div class="author">
+                            <img th:src="@{${post.user.avatar}}" alt="Avatar" class="author-avatar">
+                            <span th:text="${post.user.username}">username</span>
+                        </div>
+                        <div class="likes">
+                            <i class="fas fa-heart"></i>
+                            <span th:text="${post.likes}"></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/home.js}"></script>
+<script>
+    function confirmLogout() {
+        if (confirm("你确定要退出登录吗？")) {
+            window.location.href = "/logout";
+        }
+    }
+</script>
+
+</body>
+</html>

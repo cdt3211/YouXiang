@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>拾光优享</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+<header class="header">
+    <a class="logo" th:href="@{/index}">拾光优享</a>
+    <div class="search-bar">
+        <label>
+            <input type="text" id="searchInput" placeholder="搜索">
+        </label>
+        <i class="fas fa-search" id="searchButton" ></i>
+    </div>
+    <nav class="nav">
+        <a th:href="@{/release}">发布</a>
+        <a th:if="${loggedInUser == null}" th:href="@{/login}" class="btn">登录</a>
+        <a th:if="${loggedInUser != null}" th:href="@{/home/{id}(id=${loggedInUser.user_id})}" class="btn">主页</a>
+    </nav>
+</header>
+<div class="sidebar">
+    <ul>
+        <li>
+            <a href="#" onclick="loadAllPosts(); return false;">发现</a>
+        </li>
+        <li th:each="category : ${categories}">
+            <input type="hidden" th:value="${category.description}">
+            <a href="#" th:text="${category.name}" th:onclick="'loadPosts(' + ${category.category_id} + '); return false;'">分类名</a>
+        </li>
+    </ul>
+</div>
+<div class="main-content">
+    <div class="cards" id="cards">
+        <div th:each="products : ${initialProducts}" class="card">
+            <div class="card-cover">
+                <img th:src="@{${products.image}}" th:alt="${products.name}">
+            </div>
+            <div class="card-info">
+                <h3 th:text="${products.name}">Post Title</h3>
+                <p th:text="${products.description}">Post Description</p>
+                <div class="author-wrapper">
+                    <div class="likes">
+                        <i class="fas fa-star"></i>
+                        <span th:text="${products.collected}">123</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/index.js}" ></script>
+<script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户发布帖子</title>
+    <link rel="stylesheet" th:href="@{/css/release.css}">
+</head>
+<body>
+<div class="list">
+    <h1>发布新贴文</h1>
+        <form th:action="@{/release}" method="post" enctype="multipart/form-data">
+            <div class="form-layout">
+                <div class="form-column">
+                    <table>
+                        <tr>
+                            <td>封面</td>
+                            <td>
+                                <img id="coverImagePreview" src="https://youxiang-1317606226.cos.ap-beijing.myqcloud.com/d8600a84-e0e4-4a40-9b7d-8bccd5086621_Abner (2).png" alt="封面图片" width="150" height="150">
+                                <input type="file" name="cover_image" id="coverImageFile" class="input" onchange="previewCoverImage()">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>标题</td>
+                            <td><input type="text" placeholder="请输入标题" name="title" class="input"></td>
+                        </tr>
+                        <tr>
+                            <td>分类</td>
+                            <td>
+                                <select class="input" id="categorySelect" onchange="updateProductsBasedOnCategory()">
+                                    <option value="">请选择分类</option>
+                                    <option th:each="category : ${categories}" th:value="${category.category_id}" th:text="${category.name}"></option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>产品</td>
+                            <td>
+                                <select name="product_id" class="input" id="productSelect">
+                                    <option value="">请选择产品</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><input type="submit" value="添加" class="submit"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="content-column">
+                    <textarea type="text" placeholder="正文" name="description" class="input" id="article"></textarea>
+                </div>
+            </div>
+        </form>
+</div>
+<script th:src="@{/js/uploadCoverImage.js}"></script>
+<script>
+    function updateProductsBasedOnCategory() {
+        var categoryId = document.getElementById('categorySelect').value;
+        var productSelect = document.getElementById('productSelect');
+
+        productSelect.innerHTML = '<option value="">请选择产品</option>';
+
+        // Assuming you have a way to get products based on category, e.g., via an AJAX call
+        fetch('/index/products/' + categoryId)
+            .then(response => response.json())
+            .then(products => {
+                products.forEach(product => {
+                    var option = new Option(product.name, product.product_id);
+                    productSelect.add(option);
+                });
+            })
+            .catch(error => console.error('Error fetching products:', error));
+    }
+</script>
+</body>
+</html>

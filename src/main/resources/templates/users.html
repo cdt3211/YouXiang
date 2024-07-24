@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户信息列表</title>
+    <link rel="stylesheet" th:href="@{/css/adminData.css}">
+</head>
+<body>
+
+<div id="viewport">
+    <div id="sidebar">
+        <!--    标题-->
+        <header>
+            <a class="logo" th:href="@{/index}">拾光优享</a>
+        </header>
+        <div class="avatar-container">
+            <!--        头像-->
+            <img th:src="@{${loggedInUser.avatar}}" alt="用户头像" class="avatar">
+        </div>
+        <!--    头像下显示用户名-->
+        <p class="user-name"><span th:text="${loggedInUser.username}"></span></p>
+        <ul>
+            <li><a class="logo" th:href="@{/admin}">首页</a></li>
+            <li><a class="logo user" th:href="@{/admin/users}">用户管理</a></li>
+            <li><a class="logo product" th:href="@{/admin/products}">产品管理</a></li>
+            <li><a class="logo post" th:href="@{/admin/posts}">帖文管理</a></li>
+            <li><a class="logo category" th:href="@{/admin/categories}">分类管理</a></li>
+            <li><a class="logo comment" th:href="@{/admin/comments}">评论管理</a></li>
+        </ul>
+    </div>
+</div>
+
+<div id="content">
+    <h1>用户管理</h1>
+    <div class="search">
+        <form action="/searchUsers" method="get">
+            用户ID：<input type="text" name="user_id" class="input">
+            用户名：<input type="text" name="username" class="input">
+            邮箱：<input type="text" name="email" class="input">
+            <button type="submit" value="搜索">搜索</button>
+        </form>
+        <br>
+        <form action="/searchUsersByStr" method="post">
+            模糊搜索：<input type="text" name="searchStr" id="searchStr" class="input">
+            <button type="submit" value="搜索">搜索</button>
+        </form>
+        <br>
+        <button><a th:href="@{/addUser}">添加用户</a></button>
+        <button type="button" value="批量删除" onclick="dels()">批量删除</button>
+    </div>
+    <div class="list">
+    <table>
+        <thead>
+        <tr>
+            <td>选择</td>
+            <td>UID</td>
+            <td>用户名</td>
+            <td>密码</td>
+            <td>邮箱</td>
+            <td>头像</td>
+            <td>简介</td>
+            <td>级别</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user:${page.list}">
+            <td><input type="checkbox" class="user_ids" th:value="${user.user_id}"></td>
+            <td th:text="${user.user_id}"></td>
+            <td>
+                <a th:href="@{'/home/'+${user.user_id}}">[[${user.username}]]</a>
+            </td>
+            <td th:text="${user.password}"></td>
+            <td th:text="${user.email}"></td>
+            <td><img th:src="@{${user.avatar}}" th:alt="${user.username}" width="100" height="100"></td>
+            <td th:text="${user.bio}"></td>
+            <td th:text="${user.role != 'admin' ? '普通用户' : '管理员'}"></td>
+            <td>
+                <a th:href="@{'/toUpdateUser/'+${user.user_id}}">编辑</a>
+                <a th:href="@{'/deleteUser/'+${user.user_id}}">删除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table><br>
+    <div>
+        <a th:if="${not page.isFirstPage}" th:href="@{/admin/users(start=${page.pageNum - 1})}">
+            上一页
+        </a>
+        &nbsp;&nbsp;总页数：<span th:text="${page.pages}"></span>
+        &nbsp;&nbsp;当前页：<span th:text="${page.pageNum}"></span>
+        &nbsp;&nbsp;总记录数：<span th:text="${page.total}"></span>
+        &nbsp;&nbsp;当前页记录数：<span th:text="${page.size}"></span>
+        &nbsp;&nbsp;
+        <a th:if="${not page.isLastPage}" th:href="@{/admin/users(start=${page.pageNum + 1})}">
+            下一页
+        </a>
+    </div>
+    </div>
+</div>
+
+
+<script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+<script>
+    function dels(){
+        if(confirm("确定删除所选用户吗？")){
+            var user_ids="";
+            $(".user_ids").each(
+                function(i,e){
+                    if($(e).is(":checked")){
+                        var user_id=$(e).val();
+                        user_ids+=user_id+",";
+                    }
+                }
+            )
+        }
+        if(user_ids.length==0){
+            alert("请选择要删除的用户！");
+        }else{
+            user_ids=user_ids.substring(0,user_ids.length-1);
+            location.href="/deleteUsers?user_id="+user_ids;
+        }
+    }
+</script>
+</body>
+</html>

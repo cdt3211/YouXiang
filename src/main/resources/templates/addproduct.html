@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>添加产品</title>
+    <link rel="stylesheet" th:href="@{/css/adminUpdateData.css}">
+</head>
+<body>
+
+<div class="list">
+<h1>添加产品</h1>
+<form th:action="@{/addProduct}" method="post" enctype="multipart/form-data">
+  <table>
+      <div>
+      <tr>
+          <td>封面</td>
+          <td>
+              <img id="coverImagePreview" src="https://img0.baidu.com/it/u=3845639002,4040944931&fm=253&fmt=auto&app=138&f=JPG?w=300&h=300" alt="预览图" width="150" height="150">
+              <input type="file" id="coverImageFile" name="coverImageFile" class="input" onchange="previewImage()">
+          </td>
+      </tr>
+    <tr>
+      <td>名称</td>
+      <td><input type="text" name="name" class="input"></td>
+    </tr>
+    <tr>
+      <td>简介</td>
+      <td>
+<!--        <input type="text" name="description" class="input">-->
+        <textarea class="input" name="description"></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td>品牌</td>
+      <td><input type="text" name="brand" class="input"></td>
+    </tr>
+    <tr>
+      <td>分类</td>
+      <td>
+        <select name="category_id" class="input">
+          <option value="">请选择分类</option>
+          <option th:each="category : ${categories}" th:value="${category.category_id}" th:text="${category.name}"></option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2"><input type="submit" value="添加" class="submit"></td>
+    </tr>
+      </div>
+  </table>
+    <div th:if="${error}" class="error-message">
+        <p th:text="${error}"></p>
+    </div>
+</form>
+</div>
+<script th:src="@{/js/uploadCoverImage.js}"></script>
+</body>
+</html>

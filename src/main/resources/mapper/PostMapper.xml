@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cupk.mapper.PostMapper">
+    <resultMap id="PostResultMap" type="Post">
+        <id property="post_id" column="post_id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="cover_image" column="cover_image"/>
+        <result property="create_at" column="create_at"/>
+        <result property="likes" column="likes"/>
+        <association property="user" javaType="User">
+            <id property="user_id" column="user_id"/>
+            <result property="username" column="username"/>
+            <result property="avatar" column="avatar"/>
+        </association>
+        <association property="product" javaType="Product">
+            <id property="product_id" column="product_id"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+    <select id="findPostsByProductId" parameterType="Integer" resultMap="PostResultMap">
+        SELECT p.*,u.username,u.avatar
+        FROM posts p
+        JOIN product_posts pp ON p.post_id = pp.post_id
+        JOIN users u ON p.user_id = u.user_id
+        WHERE pp.product_id = #{product_id};
+    </select>
+    <select id="findPostIdsByProductId" parameterType="Integer">
+        SELECT post_id
+        FROM product_posts
+        WHERE product_id = #{product_id}
+    </select>
+    <select id="findAllPosts" resultMap="PostResultMap">
+        SELECT p.*, u.username, u.avatar
+        FROM posts p
+        JOIN users u ON p.user_id = u.user_id
+        order by p.post_id desc
+    </select>
+
+    <select id="findPostById" parameterType="Integer" resultMap="PostResultMap">
+        SELECT p.*, u.username, u.avatar,pr.name,pr.product_id
+        FROM posts p
+        JOIN users u ON p.user_id = u.user_id
+        JOIN product_posts pp ON p.post_id = pp.post_id
+        JOIN products pr ON pp.product_id = pr.product_id
+        WHERE p.post_id = #{post_id}
+    </select>
+
+    <insert id="addPost" useGeneratedKeys="true" keyProperty="post_id">
+        INSERT INTO posts (title, description, cover_image, user_id)
+        VALUES (#{title}, #{description}, #{cover_image}, #{user.user_id})
+    </insert>
+
+    <insert id="addProductPost"  useGeneratedKeys="true">
+        INSERT INTO product_posts (post_id, product_id) VALUES (#{post_id}, #{product.product_id})
+    </insert>
+
+    <update id="updateProductPost" parameterType="Post">
+        UPDATE product_posts
+        SET product_id = #{product.product_id}
+        WHERE post_id = #{post_id}
+    </update>
+    <update id="updatePost" parameterType="Post">
+        UPDATE posts
+        SET title = #{title}, description = #{description}, cover_image = #{cover_image},detail_images = #{detail_images}
+        WHERE post_id = #{post_id}
+    </update>
+    <delete id="deleteProductPost">
+        DELETE FROM product_posts
+        WHERE post_id = #{post_id}
+    </delete>
+    <delete id="deleteCommentOfPost">
+        DELETE FROM comments
+        WHERE comment_post_id = #{post_id}
+    </delete>
+    <delete id="deleteUserLikePost">
+        DELETE FROM user_likes
+        WHERE like_post_id = #{post_id}
+    </delete>
+    <delete id="deletePost" parameterType="Integer">
+        DELETE FROM posts
+        WHERE post_id = #{post_id}
+    </delete>
+    <select id="searchPosts" resultMap="PostResultMap">
+        SELECT p.*, u.*
+        FROM posts p
+        JOIN users u ON p.user_id = u.user_id
+        <where>
+            <if test="post_id != null and post_id != ''">
+                AND p.post_id LIKE CONCAT('%', #{post_id}, '%')
+            </if>
+            <if test="user != null and user.user_id != null and user.user_id != ''">
+                AND p.user_id LIKE CONCAT('%', #{user.user_id}, '%')
+            </if>
+            <if test="user != null and user.username != null and user.username != ''">
+                AND u.username LIKE CONCAT('%', #{user.username}, '%')
+            </if>
+            <if test="title != null and title != ''">
+                AND p.title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <if test="description != null and description != ''">
+                AND p.description LIKE CONCAT('%', #{description}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="searchPostsByStr" parameterType="java.lang.String" resultMap="PostResultMap">
+        SELECT p.*, u.*
+        FROM posts p
+        JOIN users u ON p.user_id = u.user_id
+        WHERE 1=1
+        <if test="searchStr!=null and searchStr!=''">
+            and title like concat('%',#{searchStr},'%')
+            or description like concat('%',#{searchStr},'%')
+            or u.username like concat('%',#{searchStr},'%')
+        </if>
+    </select>
+    <delete id="deleteProductPosts">
+        DELETE FROM product_posts
+        WHERE post_id IN
+        <foreach collection="array" item="post_id" open="(" close=")" separator=",">
+            #{post_id}
+        </foreach>
+    </delete>
+    <delete id="deleteUserLikePosts">
+        DELETE FROM user_likes
+        WHERE like_post_id IN
+        <foreach collection="array" item="post_id" open="(" close=")" separator=",">
+            #{post_id}
+        </foreach>
+    </delete>
+    <delete id="deleteCommentOfPosts">
+        DELETE FROM comments
+        WHERE comment_post_id IN
+        <foreach collection="array" item="post_id" open="(" close=")" separator=",">
+            #{post_id}
+        </foreach>
+    </delete>
+    <delete id="deletePosts">
+        DELETE FROM posts
+        WHERE post_id IN
+        <foreach collection="array" item="post_id" open="(" close=")" separator=",">
+            #{post_id}
+        </foreach>
+    </delete>
+
+    <select id="findPostsByUserId" parameterType="Integer" resultMap="PostResultMap">
+        SELECT p.*, u.username, u.avatar
+        FROM posts p
+        JOIN users u ON p.user_id = u.user_id
+        WHERE p.user_id = #{user_id}
+    </select>
+
+<!--    点赞-->
+    <update id="addPostLike" parameterType="Integer">
+        UPDATE posts
+        SET likes = likes + 1
+        WHERE post_id = #{post_id}
+    </update>
+    <update id="reducePostLike" parameterType="Integer">
+        UPDATE posts
+        SET likes = likes - 1
+        WHERE post_id = #{post_id}
+    </update>
+    <insert id="likePost" parameterType="Integer">
+        INSERT INTO user_likes (like_post_id, like_user_id)
+        VALUES (#{post_id}, #{user_id})
+    </insert>
+
+    <delete id="unlikePost" parameterType="Integer">
+        DELETE FROM user_likes
+        WHERE like_post_id = #{post_id} AND like_user_id = #{user_id}
+    </delete>
+
+    <resultMap id="LikeResultMap" type="Post">
+        <id property="post_id" column="post_id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="cover_image" column="cover_image"/>
+        <result property="create_at" column="create_at"/>
+        <result property="likes" column="likes"/>
+        <association property="user" javaType="User">
+            <id property="user_id" column="user_id"/>
+            <result property="username" column="username"/>
+            <result property="avatar" column="avatar"/>
+        </association>
+    </resultMap>
+    <select id="findUserLikes" parameterType="Integer" resultMap="LikeResultMap">
+        SELECT p.*, u.username, u.avatar
+        FROM posts p
+        JOIN users u ON p.user_id = u.user_id
+        JOIN user_likes ul ON p.post_id = ul.like_post_id
+        WHERE ul.like_user_id = #{like_user_id}
+    </select>
+
+    <select id="hasUserLikedPost" parameterType="map" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM user_likes
+        WHERE like_post_id = #{post_id} AND like_user_id = #{user_id}
+    </select>
+
+    <select id="findPostIdsByUserId" parameterType="Integer">
+        SELECT post_id
+        FROM posts
+        WHERE user_id = #{user_id}
+    </select>
+</mapper>

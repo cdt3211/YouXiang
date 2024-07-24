@@ -1,0 +1,92 @@
+/*管理员更新数据样式*/
+html,body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(125% 125% at 50% 10%, #000 40%, #63e 100%);
+    position: relative;
+}
+
+.list{
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+/* 样式表 */
+table {
+    width: 100%; /* 表格宽度为100% */
+    border-collapse: collapse; /* 合并边框 */
+}
+
+th, td {
+    padding: 8px; /* 单元格内边距 */
+    text-align:center; /* 文本居中对齐 */
+    border-bottom: 1px solid #ddd; /* 底部边框 */
+}
+
+th {
+    background-color: #f2f2f2; /* 标题行背景色 */
+}
+
+/* 可选：添加悬停效果 */
+tr:hover {background-color: #f5f5f5;}
+
+
+.input {
+    max-width: 190px;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 2px 2px 7px 0 rgb(0, 0, 0, 0.2);
+    outline: none;
+    color: dimgray;
+}
+
+.input:invalid {
+    animation: justshake 0.3s forwards;
+    color: red;
+}
+
+@keyframes justshake {
+    25% {
+        transform: rotate(5deg);
+    }
+
+    50% {
+        transform: rotate(-5deg);
+    }
+
+    75% {
+        transform: rotate(5deg);
+    }
+}
+/*修改按钮样式*/
+.submit{
+    width: 5rem;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.75rem;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.submit:hover{
+    background-color: #0056b3;
+}
+
+#avatarPreview{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: block;
+}
+
+

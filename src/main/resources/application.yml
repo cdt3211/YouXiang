@@ -1,0 +1,38 @@
+server:
+    port: 8088
+
+spring:
+    application:
+        name: Project
+    datasource:
+        username: root
+        password: 123456
+        url: jdbc:mysql://127.0.0.1:3306/project?userUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    thymeleaf:
+        cache: false
+        encoding: UTF-8
+        mode: HTML5
+        suffix: .html
+        prefix: classpath:/templates/
+
+mybatis:
+    type-aliases-package: com.cupk.pojo
+    mapper-locations: classpath*:/mapper/*.xml #加载此路径下的映射文件
+    configuration:
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+pagehelper:
+    helper-dialect: mysql
+    reasonable: true
+    support-methods-arguments: true
+    params: count=countsql
+
+cos:
+    baseUrl: https://youxiang-1317606226.cos.ap-beijing.myqcloud.com
+    accessKey:
+    secretKey:
+    regionName:
+    bucketName:
+    folderPrefix: /project/
+

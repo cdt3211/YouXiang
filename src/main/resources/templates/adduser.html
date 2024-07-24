@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>添加用户</title>
+    <link rel="stylesheet" th:href="@{/css/adminUpdateData.css}">
+</head>
+
+
+<body>
+<div class="list">
+<h1>添加用户</h1>
+<form th:action="@{/addUser}" method="post" enctype="multipart/form-data">
+<table>
+<!--    展示用户头像-->
+    <tr>
+        <td>头像</td>
+        <td>
+            <img id="avatarPreview" src="https://youxiang-1317606226.cos.ap-beijing.myqcloud.com/d8600a84-e0e4-4a40-9b7d-8bccd5086621_Abner (2).png" alt="头像" class="avatar">
+            <input type="file" name="avatarFile" id="avatarFile" class="input" onchange="previewAvatar()">
+        </td>
+    </tr>
+    <tr>
+        <td>用户名</td>
+        <td><input type="text" name="username" class="input"></td>
+    </tr>
+    <tr>
+        <td>密码</td>
+        <td><input type="text" name="password" class="input"></td>
+    </tr>
+    <tr>
+        <td>邮箱</td>
+        <td><input type="text" name="email" class="input"></td>
+    </tr>
+    <tr>
+        <td>个性签名</td>
+        <td><input type="text" name="bio" class="input"></td>
+    </tr>
+    <tr>
+        <td>角色</td>
+        <td>
+            <select name="role" class="input">
+                <option value="user">普通用户</option>
+                <option value="admin">管理员</option>
+            </select>
+        </td>
+    <tr>
+        <td colspan="2"><input type="submit" value="添加" class="submit"></td>
+    </tr>
+    </table>
+    <div th:if="${error}" class="error-message">
+        <p th:text="${error}"></p>
+    </div>
+</form>
+</div>
+<script th:src="@{/js/upLoadAvatar.js}"></script>
+</body>
+</html>

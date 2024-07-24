@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>评论信息列表</title>
+  <link rel="stylesheet" th:href="@{/css/adminData.css}">
+</head>
+
+<body>
+<div id="viewport">
+  <div id="sidebar">
+    <!--    标题-->
+    <header>
+      <a class="logo" th:href="@{/index}">拾光优享</a>
+    </header>
+    <div class="avatar-container">
+      <!--        头像-->
+      <img th:src="@{${loggedInUser.avatar}}" alt="用户头像" class="avatar">
+    </div>
+    <!--    头像下显示用户名-->
+    <p class="user-name"><span th:text="${loggedInUser.username}"></span></p>
+    <ul>
+      <li><a class="logo" th:href="@{/admin}">首页</a></li>
+      <li><a class="logo user" th:href="@{/admin/users}">用户管理</a></li>
+      <li><a class="logo product" th:href="@{/admin/products}">产品管理</a></li>
+      <li><a class="logo post" th:href="@{/admin/posts}">帖文管理</a></li>
+      <li><a class="logo category" th:href="@{/admin/categories}">分类管理</a></li>
+      <li><a class="logo comment" th:href="@{/admin/comments}">评论管理</a></li>
+    </ul>
+  </div>
+</div>
+
+<div id="content">
+  <h1>评论管理</h1>
+  <div class="search">
+    <form action="/searchComments" method="get">
+      评论ID：<input type="text" name="comment_id" class="input">
+      用户姓名：<input type="text" name="user.username" class="input"><br><br>
+      所属贴文：<input type="text" name="post.title" class="input">
+      评论内容：<input type="text" name="content" class="input">
+      <button type="submit" value="搜索">搜索</button>
+    </form>
+    <br>
+    <form action="/searchCommentsByStr" method="post">
+      模糊搜索：<input type="text" name="searchStr" id="searchStr" class="input">
+      <button type="submit" value="搜索">搜索</button>
+    </form>
+    <br>
+    <button type="button" value="批量删除" onclick="dels()">批量删除</button>
+  </div>
+  <div>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前查询到的评论数：<span th:text="${comments.size()}"></span></p>
+  </div>
+  <div class="list">
+    <table>
+      <thead>
+      <tr>
+        <td>选择</td>
+        <td>评论ID</td>
+        <td>用户姓名</td>
+        <td>评论时间</td>
+        <td>内容</td>
+        <td>所属帖子</td>
+        <td>点赞量</td>
+        <td>操作</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="comment:${comments}">
+        <td><input type="checkbox" class="comment_ids" th:value="${comment.comment_id}"></td>
+        <td th:text="${comment.comment_id}"></td>
+        <td><a th:href="@{/home/{id}(id=${comment.user.user_id})}" th:text="${comment.user.username}"></a></td>
+        <td th:text="${comment.create_at != null ? #dates.format(comment.create_at, 'yyyy-MM-dd HH:mm:ss') : '未提供时间'}"></td>
+        <td th:text="${comment.content}"></td>
+        <td><a th:href="@{/index/post/{id}(id=${comment.post.post_id})}" th:text="${comment.post.title}"></a></td>
+        <td th:text="${comment.likes}"></td>
+        <td>
+          <a th:href="@{'/deleteComment/'+${comment.comment_id}}">删除</a>
+        </td>
+      </tr>
+      </tbody>
+    </table><br><br>
+  </div>
+</div>
+
+
+<script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+<script>
+    function dels(){
+        if(confirm("确定删除所选评论吗？")){
+            var comment_ids="";
+            $(".comment_ids").each(
+                function(i,e){
+                    if($(e).is(":checked")){
+                        var comment_id=$(e).val();
+                        comment_ids+=comment_id+",";
+                    }
+                }
+            )
+        }
+        if(comment_ids.length==0){
+            alert("请选择要删除的评论！");
+        }else{
+            comment_ids=comment_ids.substring(0,comment_ids.length-1);
+            location.href="/deleteComments?comment_id="+comment_ids;
+        }
+    }
+</script>
+</body>
+</html>

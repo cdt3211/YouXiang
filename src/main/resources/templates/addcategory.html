@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>添加分类</title>
+  <link rel="stylesheet" th:href="@{/css/adminUpdateData.css}">
+</head>
+<body>
+<div class="list">
+<h1>添加分类</h1>
+<form th:action="@{/addCategory}" method="post">
+  <table>
+    <tr>
+      <td>分类名称</td>
+      <td><input type="text" name="name" class="input"></td>
+    </tr>
+    <tr>
+      <td>描述</td>
+      <td><input type="text" name="description" class="input"></td>
+    </tr>
+    <tr>
+      <td colspan="2"><input type="submit" value="添加" class="submit"></td>
+    </tr>
+  </table>
+</form>
+</div>
+</body>
+</html>

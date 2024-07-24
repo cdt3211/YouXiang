@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${product.name}">产品</title>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/userProductDetail.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+<header class="header">
+    <a class="logo" th:href="@{/index}">拾光优享</a>
+    <nav class="nav">
+        <a th:href="@{/release}">发布</a>
+        <a th:if="${loggedInUser == null}" th:href="@{/login}" class="btn">登录</a>
+        <a th:if="${loggedInUser != null}" th:href="@{/home/{id}(id=${loggedInUser.user_id})}" class="btn">主页</a>
+    </nav>
+</header>
+<div class="backToIndex">
+    <a href="javascript:history.back(-1)" class="btn-txt" >返回</a>
+</div>
+<div class="product-detail">
+    <div class="product-image">
+        <img th:src="@{${product.image}}" th:alt="${product.name}">
+    </div>
+    <div class="product-description">
+        <h2 th:text="${product.name}"></h2>
+        <p th:text="${product.brand}"></p>
+        <p th:text="${product.description}" class="description"></p>
+    </div>
+<!--    收藏按钮-->
+    <div class="collectButtonDiv">
+        <a href="javascript:void(0)" class="collect-btn" onclick="toggleCollect()" th:classappend="${userCollected != null and userCollected == true ? 'collected' : ''}">
+            <i th:class="${userCollected ? 'fas fa-star' : 'far fa-star'}" id="star"></i>
+            <span th:text="${product.collected}" class="collect-count">收藏量</span>
+        </a>
+    </div>
+</div>
+<div class="summaryButtonDiv">
+    <button id="generateSummary" class="summaryButton">
+        <span class="btn-txt">生成总结</span>
+    </button>
+</div>
+<div class="summary hidden" id="summary">
+    <p id="summaryText"></p>
+    <div id="loader" class="loader" style="display: none;"></div>
+</div>
+<input type="hidden" id="productId" th:value="${product.product_id}">
+<input type="hidden" id="userId" th:value="${loggedInUser != null ? loggedInUser.user_id : null}">
+<div class="main-content">
+    <div class="cards" id="cards">
+        <a th:each="post : ${posts}" class="card" th:href="@{/index/post/{id}(id=${post.post_id})}">
+            <div class="card-cover">
+                <img th:src="@{${post.cover_image}}" th:alt="${post.title}">
+            </div>
+            <div class="card-info">
+                <h3>
+                    <div th:text="${post.title}"></div>                </h3>
+                <p th:text="${post.description}">description</p>
+                <div class="author-wrapper">
+                    <div class="author">
+                        <img th:src="@{${post.user.avatar}}" alt="Avatar" class="author-avatar">
+                        <span th:text="${post.user.username}">username</span>
+                    </div>
+                    <div class="likes">
+                        <i class="far fa-heart"></i>
+                        <span th:text="${post.likes}"></span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('generateSummary').addEventListener('click', function() {
+        const productId = document.getElementById('productId').value;
+        // 显示加载图标
+        document.getElementById('loader').style.display = 'block';
+        document.getElementById('generateSummary').style.display = 'none';
+        document.getElementById('summary').classList.remove('hidden');
+        fetch('/summary/' + productId)
+            .then(response => response.text())
+            .then(summary => {
+                document.getElementById('summaryText').textContent = summary;
+                // 隐藏加载图标和“生成摘要”按钮
+                document.getElementById('loader').style.display = 'none';
+            })
+            .catch(error => {
+                document.getElementById('summaryText').textContent = '生成摘要时出错。';
+                console.error('Error fetching summary:', error);
+                // 隐藏加载图标
+                document.getElementById('loader').style.display = 'none';
+            });
+    });
+</script>
+<script>
+    function toggleCollect() {
+        const productId = document.getElementById('productId').value;
+        const userId = document.getElementById('userId').value;
+
+        if (!userId) {
+            alert('请先登录！');
+            return;
+        }
+
+        const collectBtn = document.querySelector('.collect-btn');
+        const collectCount = document.querySelector('.collect-count');
+
+        if (collectBtn.classList.contains('collected')) {
+            // UnCollect the product
+            fetch(`/${productId}/cancelCollect`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: userId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        collectBtn.classList.remove('collected');
+                        collectCount.textContent = parseInt(collectCount.textContent) - 1;
+                        document.getElementById('star').className = 'far fa-star';
+                    } else {
+                        alert('操作失败，请稍后重试。');
+                    }
+                });
+        } else {
+            // collect the product
+            fetch(`/${productId}/collect`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: userId }) // 你需要从某处获取userId, 例如从后端传递到前端
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        collectBtn.classList.add('collected');
+                        collectCount.textContent = parseInt(collectCount.textContent) + 1;
+                        document.getElementById('star').className = 'fas fa-star';
+                    } else {
+                        alert('操作失败，请稍后重试。');
+                    }
+                });
+        }
+    }
+
+</script>
+</body>
+</html>

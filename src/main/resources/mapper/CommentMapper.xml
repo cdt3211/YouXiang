@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cupk.mapper.CommentMapper">
+    <resultMap id="CommentResultMap" type="Comment">
+        <id property="comment_id" column="comment_id"/>
+        <result property="create_at" column="create_at"/>
+        <result property="content" column="content"/>
+        <result property="likes" column="likes"/>
+        <association property="post" javaType="Post">
+            <id property="post_id" column="post_id"/>
+            <result property="title" column="title"/>
+        </association>
+        <association property="user" javaType="User">
+            <id property="user_id" column="user_id"/>
+            <result property="username" column="username"/>
+            <result property="avatar" column="avatar"/>
+        </association>
+    </resultMap>
+
+    <select id="findAllComments" parameterType="Integer" resultMap="CommentResultMap">
+        select comments.*,posts.title,posts.post_id,posts.user_id,users.username
+        from comments
+        join posts on comments.comment_post_id = posts.post_id
+        join users on comments.comment_user_id = users.user_id
+        order by create_at desc;
+    </select>
+    <select id="findCommentsByPostId" parameterType="Integer" resultMap="CommentResultMap">
+        select comments.*,users.*
+        from comments
+        join users on comments.comment_user_id = users.user_id
+        where comment_post_id = #{comment_post_id}
+        order by create_at desc
+    </select>
+    <select id="findCommentById" parameterType="Integer" resultMap="CommentResultMap">
+        select comments.*,posts.title,posts.user_id,users.username
+        from comments
+        join posts on comments.comment_post_id = posts.post_id
+        join users on posts.user_id = users.user_id
+        where comments.comment_id = #{comment_id};
+    </select>
+    <insert id="addComment" useGeneratedKeys="true" keyProperty="comment_id">
+        insert into comments values (null, #{comment_user_id},NOW(),#{content}, #{comment_post_id},0);
+    </insert>
+    <update id="updateComment" parameterType="Comment">
+        update comments set name = #{name},comment_user_id = #{comment_user_id}, create_at = #{create_at}, content = #{content}, comment_post_id = #{comment_post_id}, likes = #{likes} where comment_id = #{comment_id};
+    </update>
+    <delete id="deleteComment" parameterType="int">
+        delete from comments where comment_id = #{comment_id};
+    </delete>
+    <select id="searchComments" resultMap="CommentResultMap">
+        select comments.*,posts.*,users.*
+        from comments
+        join posts on comments.comment_post_id = posts.post_id
+        join users on posts.user_id = users.user_id
+        <where>
+            <if test="comment_id!= null and comment_id != ''">
+                and comments.comment_id like concat('%', #{comment_id}, '%')
+            </if>
+            <if test="user!= null and user.username!= null and user.username != ''">
+                and users.username like concat('%', #{user.username}, '%')
+            </if>
+            <if test="post!=null and post.title!= null and post.title != ''">
+                and posts.title like concat('%', #{post.title}, '%')
+            </if>
+            <if test="content!= null and content != ''">
+                and comments.content like concat('%', #{content}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="searchCommentsByStr" parameterType="java.lang.String" resultMap="CommentResultMap">
+        select comments.*,posts.title,posts.user_id,users.username
+        from comments
+        join posts on comments.comment_post_id = posts.post_id
+        join users on posts.user_id = users.user_id
+        where 1=1
+        <if test="searchStr!=null and searchStr!=''">
+            and comment_id like concat('%', #{searchStr}, '%')
+            or posts.title like concat('%', #{searchStr}, '%')
+            or content like concat('%', #{searchStr}, '%')
+            or users.username like concat('%', #{searchStr}, '%')
+        </if>
+    </select>
+    <delete id="deleteComments">
+        delete from comments where comment_id in
+        <foreach collection="array" item="comment_id" open="(" close=")" separator=",">
+            #{comment_id}
+        </foreach>
+    </delete>
+</mapper>

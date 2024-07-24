@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>修改分类</title>
+  <link  rel="stylesheet" th:href="@{/css/adminUpdateData.css}">
+</head>
+<body>
+<div class="list">
+<h1>修改分类</h1><br><br>
+<form th:action="@{/updateCategory}" method="post">
+  <table>
+    <tr>
+      <td>CID</td>
+      <td><input type="text" name="category_id" th:value="${category.category_id}" readonly class="input"></td>
+    </tr>
+    <tr>
+      <td>分类名</td>
+      <td><input type="text" name="name" th:value="${category.name}" class="input"></td>
+    </tr>
+    <tr>
+      <td>描述</td>
+      <td><input type="text" name="description" th:value="${category.description}" class="input"></td>
+    </tr>
+    <tr>
+      <td colspan="2"><input type="submit" value="修改" class="submit"></td>
+    </tr>
+  </table>
+</form>
+</div>
+</body>
+</html>

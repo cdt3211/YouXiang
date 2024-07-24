@@ -1,0 +1,100 @@
+@font-face {
+    font-family: FontAwesome;
+    src: url('../font/YEFONTXiaoShiTou.ttf');
+}
+
+/*导航栏样式*/
+.header {
+    background-color: #fff;
+    padding: 10px 20px;
+    /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 60px;
+}
+.header .logo {
+    font-family: FontAwesome, sans-serif;
+    font-size: 34px;
+    /*font-weight: bold;*/
+    color: #363636;
+}
+.header .search-bar {
+    width: 40%;
+    position: relative;
+}
+.header .search-bar input {
+    width: 100%;
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+}
+.header .search-bar .fa-search {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ccc;
+}
+.header .nav a {
+    margin-left: 20px;
+    color: #333;
+}
+.header .nav a:hover {
+    color: #0000ff;
+}
+.header .nav .btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    background-color: #363636;
+    color: #fff;
+    cursor: pointer;
+}
+.header .nav .btn:hover {
+    background-color: #f3f3f3;
+    color: black;
+}
+#searchButton{
+    cursor: pointer;
+}
+.user-avatar{
+    width: 30px;
+    height: 30px;
+    border-radius: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.user-avatar img {
+    margin-right: 6px;
+    width: 30px;
+    height: 30px;
+    border-radius: 20px;
+    flex-shrink: 0;
+}
+
+
+
+/*滚动条样式*/
+/* 定义滚动条的宽度 */
+::-webkit-scrollbar {
+    width: 2px;
+}
+
+/* 定义滚动条轨道的样式 */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* 定义滚动条的样式 */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* 定义滚动条在鼠标悬停时的样式 */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

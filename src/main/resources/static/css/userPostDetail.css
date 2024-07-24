@@ -1,0 +1,222 @@
+* {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+a{
+    text-decoration: none;
+}
+body{
+    background: white;
+    background: linear-gradient(to right, #f0f0f0 1px, transparent 1px), linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
+    background-size: 2rem 2rem;
+}
+/*返回按钮*/
+.backToIndex{
+    position: fixed;
+    left: 50px;
+    width: 60px;
+    height: 40px;
+    border-radius: 0.7rem;
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+}
+.backToIndex a{
+    color: #fff;
+}
+.backToIndex:hover{
+    background-color: #000;
+}
+/*文章整体*/
+.post-detail{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    width: 50%;
+}
+.post-title{
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+.post-info{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 1rem 0;
+}
+.product{
+    display: flex;
+    align-items: center;
+
+}
+.post-author a{
+    display: flex;
+    align-items: center;
+    color: #a1a1aa;
+}
+.post-author img{
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+#post-product{
+    cursor: pointer;
+}
+.edit-delete{
+    display: flex;
+    gap: 10px;
+}
+.edit-post{
+    color: #007bff;
+    cursor: pointer;
+}
+.edit-delete{
+    color: #007bff;
+    cursor: pointer;
+}
+/*摘要*/
+.abstract{
+    width: 100%;
+    margin: 1rem auto;
+    border: 1px solid #eee;
+    border-radius: 0.75rem;
+    padding: 1rem;
+}
+.post-info{
+    color: #a1a1aa;
+}
+.abstract-title{
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #3f3f46;
+}
+.abstract-content{
+    font-size: 0.875rem;
+    color: #71717a;
+}
+.loader {
+    border: 2px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 2px solid #363636;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.post-image{
+    width: 100%;
+    margin: 1rem 0;
+    text-align: center;
+}
+.post-image img{
+    max-width: 80%;
+    border-radius: 0.75rem;
+}
+.post-content{
+    width: 100%;
+    color: #52525b;
+    margin: 1rem 0;
+}
+.post-content p{
+    white-space: pre-wrap;
+}
+.post-comment{
+    width: 100%;
+    margin: 1rem 0;
+}
+.comment-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.comment-form textarea{
+    resize: none;
+    width: 100%;
+    height: 5rem;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    border: 1px solid #eee;
+    border-radius: 0.75rem;
+}
+.comment-button,.comment-login{
+    width: 5rem;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.75rem;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.comment-button:hover{
+    background-color: #0056b3;
+}
+.comment-login:hover{
+    background-color: #0056b3;
+}
+.comment-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+}
+.comment-author{
+    display: flex;
+    align-items: center;
+    color:#a1a1aa;
+}
+.comment-author img{
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.comment-content{
+    width: 100%;
+    margin: 1rem 0;
+    border: 1px solid #eee;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    color: #52525b;
+}
+.delete-comment{
+    color: #007bff;
+    cursor: pointer;
+}
+.floating-bar {
+    position: fixed;
+    top: 90%;
+    left: 20%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 0 5px 5px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.floating-bar a {
+    color: #333;
+    font-size: 20px;
+}
+
+.floating-bar a:hover {
+    color: #007bff;
+}

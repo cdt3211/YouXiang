@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.title}">帖子详情</title>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/userPostDetail.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+<header class="header">
+    <a class="logo" th:href="@{/index}">拾光优享</a>
+    <nav class="nav">
+        <a th:href="@{/release}">发布</a>
+        <a th:if="${loggedInUser == null}" th:href="@{/login}" class="btn">登录</a>
+        <a th:if="${loggedInUser != null}" th:href="@{/home/{id}(id=${loggedInUser.user_id})}" class="btn">主页</a>
+    </nav>
+</header>
+<div class="backToIndex">
+    <a href="javascript:history.back(-1)" class="btn-txt" >返回</a>
+</div>
+<div class="post-detail">
+    <div class="post-title">
+        <h2 ><a  th:text="${post.title}" class="post-title"></a></h2>
+    </div>
+    <div class="post-info">
+        <div class="post-author">
+            <a th:href="@{/home/{id}(id=${post.user.user_id})}">
+                <img th:src="@{${post.user.avatar}}" alt="头像">
+                <span th:text="${post.user.username}">Abner</span>
+            </a>
+        </div>
+        <span id="post-product" th:text="${post.product.name != null ? post.product.name : '其它'}" class="product" th:attr="onclick=|window.location.href='/index/product/' + ${post.product.product_id}|">产品</span>
+        <span th:text="${post.create_at != null ? #dates.format(post.create_at, 'yyyy-MM-dd HH:mm:ss') : '未提供时间'}"></span>
+        <div>
+            <i class="far fa-heart"></i>
+            <span class="like-count" th:text="${post.likes}">1234</span>
+        </div>
+        <div class="edit-delete" th:if="${loggedInUser != null and (loggedInUser.user_id == post.user.user_id or loggedInUser.role == 'admin')}">
+            <a class="edit-post" th:href="@{/user/editPost/{id}(id=${post.post_id})}">编辑</a>
+            <a class="delete-post" href="javascript:void(0);" onclick="confirmDelete()">删除</a>
+        </div>
+    </div>
+    <input type="hidden" id="postId" th:value="${post.post_id}">
+    <div class="abstract">
+        <div class="abstract-title">
+            <i class="fas fa-fan"></i>
+            <span>拾光小生为您自动生成文章摘要</span>
+            <div id="loader" class="loader" style="display: none;"></div>
+        </div>
+        <div class="abstract-content">
+            <p></p>
+        </div>
+    </div>
+    <div class="post-image">
+        <img th:src="@{${post.cover_image}}" alt="帖子图片">
+    </div>
+    <div class="post-content">
+        <p th:text="${post.description}">帖子内容</p>
+    </div>
+    <div class="floating-bar">
+        <a href="javascript:void(0)" class="like-btn" onclick="toggleLike()" th:classappend="${userLiked != null and userLiked == true ? 'liked' : ''}">
+            <i th:class="${userLiked ? 'fas fa-heart' : 'far fa-heart'}" id="heart"></i>
+        </a>
+        <input type="hidden" id="userId" th:value="${loggedInUser != null ? loggedInUser.user_id : null}">
+        <a href="#" class="comment-btn"><i class="far fa-comment"></i></a>
+    </div>
+    <div class="post-comment">
+        <div class="comment-title">
+            <span>评论</span>
+            <span th:text="${comments.size()}">评论数</span>
+        </div>
+        <form class="comment-form" id="commentForm">
+            <textarea placeholder="请输入评论内容" name="content" ></textarea>
+            <input type="hidden" name="comment_post_id" th:value="${post.post_id}">
+            <input type="hidden" name="comment_user_id" th:value="${loggedInUser !=null ? loggedInUser.user_id : null }">
+            <button th:if="${loggedInUser != null}" type="submit" class="comment-button">发表评论</button>
+            <a th:if="${loggedInUser == null}" th:href="@{/login}" class="comment-login">登录评论</a>
+        </form>
+        <div class="comment-list">
+            <div class="comment-item" th:each="comment : ${comments}">
+                <div class="comment-info">
+                    <a class="comment-author" th:href="@{/home/{id}(id=${comment.user.user_id})}">
+                        <img th:src="@{${comment.user.avatar}}" alt="用户">
+                        <span th:text="${comment.user.username}">Leon</span>
+                    </a>
+                    <span th:text="${comment.create_at != null ? #dates.format(comment.create_at, 'yyyy-MM-dd HH:mm:ss') : '未提供时间'}">2021-06-01</span>
+                </div>
+                <div class="comment-content">
+                    <p th:text="${comment.content}">评论内容</p>
+                    <a th:if="${loggedInUser != null and (loggedInUser.user_id == comment.user.user_id || loggedInUser.role == 'admin')}" href="javascript:void(0)" class="delete-comment" th:data-comment-id="${comment.comment_id}" onclick="deleteComment(this)">删除</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    window.onload = function() {
+        const postId = document.getElementById('postId').value; // 你需要从某处获取postId
+        const loader = document.getElementById('loader');
+        const abstractContent = document.querySelector('.abstract-content p');
+        // 显示加载图标
+        loader.style.display = 'block';
+        fetch('/abstract/' + postId)
+            .then(response => response.text())
+            .then(abstract => {
+                // 隐藏加载图标
+                loader.style.display = 'none';
+                // 显示摘要
+                abstractContent.textContent = abstract;
+            })
+            .catch(error => {
+                console.error('Error fetching abstract:', error);
+            });
+    };
+</script>
+<script>
+    document.getElementById('commentForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        const formData = new FormData(this);
+        const postId = formData.get('comment_post_id');
+        const userId = formData.get('comment_user_id');
+        const content = formData.get('content');
+        if (!content) {
+            alert('评论内容不能为空！');
+            return;
+        }
+        fetch('/addComment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ comment_post_id: postId, content: content, comment_user_id: userId }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // 评论成功后，刷新页面
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+<script>
+    document.querySelector('.comment-btn').addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent the default anchor action
+        document.querySelector('.post-comment').scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+</script>
+<script>
+    function toggleLike() {
+        const postId = document.getElementById('postId').value;
+        const userId = document.getElementById('userId').value;
+
+        if (!userId) {
+            alert('请先登录！');
+            return;
+        }
+
+        const likeBtn = document.querySelector('.like-btn');
+        const likeCount = document.querySelector('.like-count');
+
+        if (likeBtn.classList.contains('liked')) {
+            // Unlike the post
+            fetch(`/${postId}/unlike`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: userId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        likeBtn.classList.remove('liked');
+                        likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                        document.getElementById('heart').className = 'far fa-heart';
+                    } else {
+                        alert('操作失败，请稍后重试。');
+                    }
+                });
+        } else {
+            // Like the post
+            fetch(`/${postId}/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: userId }) // 你需要从某处获取userId, 例如从后端传递到前端
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        likeBtn.classList.add('liked');
+                        likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                        document.getElementById('heart').className = 'fas fa-heart';
+                    } else {
+                        alert('操作失败，请稍后重试。');
+                    }
+                });
+        }
+    }
+
+</script>
+<script>
+    function deleteComment(element) {
+        const commentId = element.getAttribute('data-comment-id');
+        fetch(`/user/deleteComment/${commentId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('评论删除成功');
+                    window.location.reload();
+                } else {
+                    alert('删除失败，请稍后再试');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('删除失败，请稍后再试');
+            });
+    }
+</script>
+<script>
+    function confirmDelete() {
+        if (confirm("你确定要删除这篇贴文吗？")) {
+            window.location.href = "/user/deletePost/" + document.getElementById('postId').value;
+        }
+    }
+</script>
+</body>
+</html>

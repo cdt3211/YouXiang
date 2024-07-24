@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <link rel="stylesheet" th:href="@{/css/registerAndLogin.css}">
+</head>
+<body>
+<div class="shell">
+    <div class="container a-container" id="a-container">
+        <form th:action="@{/login}" method="post" class="form" id="b-form" onsubmit="return checkUserAndPassword()">
+            <h2 class="form_title title">登入账号</h2>
+
+            <div class="login">
+                <input type="text" class="form_input" placeholder="请输入用户名" name="username" id="uname" >
+            </div>
+            <div class="login">
+                <input type="password" class="form_input" placeholder="请输入密码" name="password" id="upassword" >
+            </div>
+            <div class="login">
+                <button type="submit" class="form_button button">登录</button>
+            </div>
+            <div id="loginError" style="display: none;" th:text="${loginError}"></div>
+        </form>
+    </div>
+<!--    注册-->
+    <div class="container b-container" id="b-container">
+        <form th:action="@{/register}" method="post" class="form" id="a-form" onsubmit="return checkPasswords()">
+            <h2 class="form_title title">创建账号</h2>
+            <input type="text" class="form_input" placeholder="用户名" name="username">
+            <input type="password" class="form_input" id="password" name="password" placeholder="密码" required>
+            <input type="password" class="form_input" id="confirmPassword" name="confirmPassword" placeholder="确认密码" required>
+            <input type="email" class="form_input" name="email" placeholder="邮箱">
+            <button type="submit" value="提交" class="form_button button ">创建</button>
+            <div id="registerError" style="display: none;" th:text="${registerError}"></div>
+        </form>
+    </div>
+
+    <div class="switch" id="switch-cnt">
+        <div class="switch_circle"></div>
+        <div class="switch_circle switch_circle-t"></div>
+        <div class="switch_container" id="switch-c1">
+            <h2 class="switch_title title" style="letter-spacing: 0;">拾光优享</h2>
+            <p class="switch_description description">让每一次发现，都成为生活的惊喜！</p>
+            <button class="switch_button button switch-btn">注册</button>
+        </div>
+
+        <div class="switch_container is-hidden" id="switch-c2">
+            <h2 class="switch_title title" style="letter-spacing: 0;">拾光优享</h2>
+            <p class="switch_description description">让每一次发现，都成为生活的惊喜！</p>
+            <button class="switch_button button switch-btn">登录</button>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/registerAndLogin.js}"></script>
+</body>
+
+</html>

@@ -1,0 +1,235 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: #333;
+}
+
+a:hover {
+    color: #007bff;
+}
+
+button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+button a {
+    color: white;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+input[type="text"],
+input[type="Integer"] {
+    width: 200px;
+    padding: 8px;
+    margin: 5px 10px 5px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#viewport {
+    display: flex;
+}
+
+#sidebar {
+    width: 250px;
+    background: url("https://pic.netbian.com/uploads/allimg/170611/183323-1497177203b9d9.jpg") repeat-y;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    padding-top: 10px;
+    transition: all 0.5s ease;
+}
+
+#sidebar header {
+    padding: 20px;
+    text-align: center;
+    background: #000;
+}
+
+#sidebar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+#sidebar .avatar-container {
+    text-align: center;
+    padding: 20px;
+}
+
+#sidebar .avatar {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    border: 2px solid #fff;
+}
+
+#sidebar .user-name {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#sidebar ul li {
+    padding: 10px 20px;
+}
+
+#sidebar ul li a {
+    color: white;
+    font-size: 16px;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+#sidebar ul li a:hover {
+    background-color: #555;
+    border-radius: 4px;
+}
+
+/* Content Styling */
+#content {
+    margin-left: 250px;
+    padding: 20px;
+}
+
+#content h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.search {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.search form input {
+    margin-right: 10px;
+}
+
+.list {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #e9ecef;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination a {
+    margin: 0 5px;
+    color: #333;
+}
+
+.pagination a:hover {
+    text-decoration: underline;
+    color: #555;
+}
+
+@media screen and (max-width: 768px) {
+    #viewport {
+        flex-direction: column;
+    }
+
+    #sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+    }
+
+    #content {
+        margin-left: 0;
+    }
+
+    table, th, td {
+        display: block;
+        width: 100%;
+    }
+
+    table, tr {
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    th::before, td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 45%;
+        padding-left: 10px;
+        font-weight: bold;
+        text-align: left;
+    }
+}
